@@ -6,11 +6,11 @@ import { useRef } from 'react';
 const Grid = ({ number = 23, lineWidth = 0.026, baseHeight, values }) => {
 	const light = useRef();
 	const ringWidth = 0.05;
-	const T = Math.PI / 4;
+	const T = Math.PI / 2;
 	useFrame((state) => {
 		const elapsedTime = state.clock.getElapsedTime();
 		const stage = (elapsedTime / T) % 2;
-		if (stage <= 1)
+		if (stage < 1)
 			light.current.material.uniforms.innerRadius.value =
 				1.5 * Math.abs(Math.sin(elapsedTime));
 		else light.current.material.uniforms.innerRadius.value = 0;
