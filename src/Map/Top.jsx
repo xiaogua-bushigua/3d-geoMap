@@ -1,9 +1,11 @@
 import * as THREE from 'three';
-import { useRef, useState } from 'react';
-import { Text3D, Html, Edges, QuadraticBezierLine } from '@react-three/drei';
+import { useRef, useState, useEffect } from 'react';
+import { Text3D, Html, Edges, QuadraticBezierLine, useAnimations, useGLTF } from '@react-three/drei';
 import '../lightSweep.js';
 import { gsap } from 'gsap';
 import { useFrame } from '@react-three/fiber';
+import Flylines from './Flylines.jsx';
+import Bird from './Bird.jsx';
 
 const Top = ({ baseHeight, midHeightScale, topHeightScale, blocks, values, mapCenter }) => {
 	const scale = 3.15;
@@ -25,7 +27,6 @@ const Top = ({ baseHeight, midHeightScale, topHeightScale, blocks, values, mapCe
 
 	const blocksRef = useRef([]);
 	const namesRef = useRef([]);
-	const moveLinesRef = useRef([]);
 
 	const textConfig = {
 		curveSegments: 32,
@@ -40,8 +41,39 @@ const Top = ({ baseHeight, midHeightScale, topHeightScale, blocks, values, mapCe
 	const [makerVisible, setMakerVisible] = useState(false);
 	const [makerPosition, setMakerPosition] = useState([0, 2, 0]);
 	const [makerValue, setMakerValue] = useState('');
-	const handleEnter = (e, index) => {
+	const [lines, setLines] = useState({ children: [] });
+	const [targetPosition, setTargetPosition] = useState({ x: 0, z: 0 });
+
+	const handleClick = (e, index) => {
 		e.stopPropagation();
+		setLines({ children: [] });
+		// 第二次点击选中的地图，让其恢复默认状态
+		if (blocksRef.current[index].scale.z == 0.8) handleSecondClick(index);
+		else {
+			handleFristClick(index);
+		}
+	};
+	const handleFristClick = (index) => {
+		let tempArr = [];
+		blocks.forEach((block, i) => {
+			if (i !== index) {
+				const startX = (blocks[index].properties.center[0] - mapCenter[0]) * scale;
+				const startZ = -(blocks[index].properties.center[1] - mapCenter[1]) * scale;
+				const endX = (block.properties.center[0] - mapCenter[0]) * scale;
+				const endZ = -(block.properties.center[1] - mapCenter[1]) * scale;
+				tempArr.push({
+					start: [startX, baseHeight * (1 + midHeightScale + topHeightScale) + 0.3, startZ],
+					end: [endX, baseHeight * (1 + midHeightScale + topHeightScale) + 0.3, endZ],
+					mid: [
+						startX + (endX - startX) / 5,
+						baseHeight * (1 + midHeightScale + topHeightScale) + 2,
+						startZ + (endZ - startZ) / 5,
+					],
+				});
+			}
+		});
+		setLines({ children: [...tempArr] });
+		// maker
 		const province = blocks[index].properties.name;
 		setMakerVisible(true);
 		setMakerValue(rank[province]);
@@ -50,79 +82,41 @@ const Top = ({ baseHeight, midHeightScale, topHeightScale, blocks, values, mapCe
 			2,
 			-(blocks[index].properties.center[1] - mapCenter[1]) * scale,
 		]);
-
+		// block
+		blocksRef.current.forEach((block, lastIndex) => {
+			if (block.scale.z === 0.8) {
+				gsap.to(blocksRef.current[lastIndex].scale, {
+					duration: 0.3,
+					z: topHeightScale,
+				});
+				blocksRef.current[lastIndex].material.color = new THREE.Color('#9cb8e4');
+				namesRef.current[lastIndex].material.opacity = 1;
+			}
+		});
 		gsap.to(blocksRef.current[index].scale, { duration: 0.3, z: 0.8 });
 		blocksRef.current[index].material.color = new THREE.Color('#ffb47e');
+		namesRef.current[index].material.opacity = 0;
+		// bird
+		setTargetPosition({ ...targetPosition, x: tempArr[0].start[0], z: tempArr[0].start[2] });
 	};
-	const handleLeave = (e, index) => {
-		e.stopPropagation();
+	const handleSecondClick = (index) => {
 		setMakerVisible(false);
 		setMakerValue('');
 		setMakerPosition([0, 2, 0]);
-
-		setLines({ children: [] });
-
 		gsap.to(blocksRef.current[index].scale, {
 			duration: 0.3,
 			z: topHeightScale,
 		});
 		blocksRef.current[index].material.color = new THREE.Color('#9cb8e4');
+		namesRef.current[index].material.opacity = 1;
 	};
-
-	const [lines, setLines] = useState({ children: [] });
-	const handleClick = (e, index) => {
-		e.stopPropagation();
-		setLines({ children: [] });
-		let temp = [];
-		blocks.forEach((block, i) => {
-			if (i !== index) {
-				const startX = (blocks[index].properties.center[0] - mapCenter[0]) * scale;
-				const startZ = -(blocks[index].properties.center[1] - mapCenter[1]) * scale;
-				const endX = (block.properties.center[0] - mapCenter[0]) * scale;
-				const endZ = -(block.properties.center[1] - mapCenter[1]) * scale;
-				temp.push({
-					start: [startX, 1.2, startZ],
-					end: [endX, 1.2, endZ],
-					mid: [(startX + endX) / 2, 3, (startZ + endZ) / 2],
-				});
-			}
-		});
-		setLines({ children: [...temp] });
-	};
-
-	useFrame((_, delta) => {
-		if (moveLinesRef.current.length != 0 && moveLinesRef.current[0]) {
-			moveLinesRef.current.forEach((line) => {
-				line.material.uniforms.dashOffset.value -= delta * 2;
-			});
-		}
-	});
 	return (
 		<>
-			{lines.children.map((line, index) => (
-				<group key={'fly_line_' + index}>
-					<QuadraticBezierLine
-						start={line.start}
-						end={line.end}
-						mid={line.mid}
-						color="#ffffff"
-						lineWidth={2}
-						dashed={false}
-					/>
-					<QuadraticBezierLine
-						ref={(el) => (moveLinesRef.current[index] = el)}
-						start={line.start}
-						end={line.end}
-						mid={line.mid}
-						color="#ff7411"
-						dashed
-						dashScale={2}
-						gapSize={2}
-						lineWidth={2}
-					/>
-				</group>
-			))}
-
+			{/* 飞鸟 */}
+			<Bird targetPosition={targetPosition} />
+			{/* 飞线 */}
+			<Flylines lines={lines} />
+			{/* 点击后的城市maker */}
 			<Html
 				style={{
 					transition: 'all 0.2s',
@@ -137,7 +131,7 @@ const Top = ({ baseHeight, midHeightScale, topHeightScale, blocks, values, mapCe
 			>
 				<h3>{makerValue}</h3>
 			</Html>
-
+			{/* 城市名称 */}
 			<group rotation={[0, Math.PI * 1.1, Math.PI]} position-y={baseHeight + midHeightScale * baseHeight + 0.01}>
 				{blocks.map((item, index) => (
 					<group key={'city_' + index}>
@@ -155,12 +149,12 @@ const Top = ({ baseHeight, midHeightScale, topHeightScale, blocks, values, mapCe
 							{...textConfig}
 						>
 							{item.properties.name}
-							<meshBasicMaterial color={'#ffffff'} />
+							<meshBasicMaterial color={'#ffffff'} transparent />
 						</Text3D>
 					</group>
 				))}
 			</group>
-
+			{/* 城市block */}
 			<group
 				rotation={[-Math.PI * 0.5, 0, Math.PI * 0.09]}
 				position-y={baseHeight + midHeightScale * baseHeight + 0.01}
@@ -173,8 +167,6 @@ const Top = ({ baseHeight, midHeightScale, topHeightScale, blocks, values, mapCe
 							ref={(el) => {
 								blocksRef.current[index] = el;
 							}}
-							onPointerEnter={(e) => handleEnter(e, index)}
-							onPointerLeave={(e) => handleLeave(e, index)}
 							onClick={(e) => handleClick(e, index)}
 						>
 							<meshPhysicalMaterial

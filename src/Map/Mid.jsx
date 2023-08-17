@@ -1,6 +1,6 @@
-import { MeshTransmissionMaterial } from '@react-three/drei';
+import { MeshTransmissionMaterial, useGLTF, useAnimations } from '@react-three/drei';
 import { useLoader } from '@react-three/fiber';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import * as BufferGeometryUtils from 'three/addons/utils/BufferGeometryUtils.js';
 import { RGBELoader } from 'three-stdlib';
 
@@ -20,10 +20,7 @@ const Mid = ({ baseHeight, midHeightScale, blocks }) => {
 	const background = useLoader(RGBELoader, './umhlanga_sunrise_1k.hdr');
 
 	const geometries = blocks.map((item) => item.children[0].geometry);
-	const merged = useMemo(
-		() => BufferGeometryUtils.mergeBufferGeometries(geometries),
-		[geometries]
-	);
+	const merged = useMemo(() => BufferGeometryUtils.mergeBufferGeometries(geometries), [geometries]);
 
 	return (
 		<group

@@ -4,7 +4,6 @@ import Grid from './Grid';
 import Map from './Map/Map';
 import countValues_anhui from './assets/values_anhui.json';
 import geoJson_anhui from './assets/安徽省.json';
-import { useControls } from 'leva';
 import { Suspense, memo } from 'react';
 import Loading from './Loading';
 

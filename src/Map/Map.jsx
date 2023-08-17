@@ -3,6 +3,7 @@ import * as d3 from 'd3-geo';
 import Base from './Base';
 import Mid from './Mid';
 import Top from './Top';
+import { useState } from 'react';
 
 const processing = (oriData, values) => {
 	oriData.features.forEach((province) => {
@@ -15,14 +16,7 @@ const processing = (oriData, values) => {
 	return oriData;
 };
 
-const Map = ({
-	baseHeight,
-	midHeightScale,
-	topHeightScale,
-	values,
-	geoJson,
-	mapCenter,
-}) => {
+const Map = ({ baseHeight, midHeightScale, topHeightScale, values, geoJson, mapCenter }) => {
 	const map = new THREE.Object3D();
 	const projection = d3.geoMercator().center(mapCenter).translate([0, 0]);
 
@@ -48,27 +42,17 @@ const Map = ({
 							shape.moveTo(x, -y);
 						}
 						shape.lineTo(x, -y);
-						vertices.push(
-							x,
-							-y,
-							baseHeight * topHeightScale + 0.001
-						);
+						vertices.push(x, -y, baseHeight * topHeightScale + 0.001);
 					}
 				}
-				lineGeometry.setAttribute(
-					'position',
-					new THREE.BufferAttribute(new Float32Array(vertices), 3)
-				);
+				lineGeometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(vertices), 3));
 
 				const extrudeSettings = {
 					depth: baseHeight,
 					bevelEnabled: false,
 				};
 
-				const geometry = new THREE.ExtrudeGeometry(
-					shape,
-					extrudeSettings
-				);
+				const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
 				const material = new THREE.MeshBasicMaterial();
 				const material1 = new THREE.MeshBasicMaterial();
 				const mesh = new THREE.Mesh(geometry, [material, material1]);
@@ -90,11 +74,7 @@ const Map = ({
 	return (
 		<group>
 			<Base blocks={map.children} baseHeight={baseHeight} />
-			<Mid
-				blocks={map.children}
-				baseHeight={baseHeight}
-				midHeightScale={midHeightScale}
-			/>
+			<Mid blocks={map.children} baseHeight={baseHeight} midHeightScale={midHeightScale} />
 			<Top
 				blocks={map.children}
 				baseHeight={baseHeight}

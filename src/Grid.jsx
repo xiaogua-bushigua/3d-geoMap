@@ -8,11 +8,9 @@ const Grid = ({ number = 23, lineWidth = 0.026, baseHeight, values }) => {
 	const ringWidth = 0.05;
 	const T = Math.PI / 2;
 	useFrame((state) => {
-		const elapsedTime = state.clock.getElapsedTime();
+		const elapsedTime = state.clock.getElapsedTime() / 1.5;
 		const stage = (elapsedTime / T) % 2;
-		if (stage < 1)
-			light.current.material.uniforms.innerRadius.value =
-				1.5 * Math.abs(Math.sin(elapsedTime));
+		if (stage < 1) light.current.material.uniforms.innerRadius.value = 1.5 * Math.abs(Math.sin(elapsedTime));
 		else light.current.material.uniforms.innerRadius.value = 0;
 		light.current.material.uniforms.ringWidth.value = ringWidth;
 	});
@@ -28,11 +26,7 @@ const Grid = ({ number = 23, lineWidth = 0.026, baseHeight, values }) => {
 	};
 	return (
 		<>
-			<mesh
-				ref={light}
-				position={[0, 0, 0]}
-				rotation={[-Math.PI / 2, 0, 0]}
-			>
+			<mesh ref={light} position={[0, 0, 0]} rotation={[-Math.PI / 2, 0, 0]}>
 				<planeGeometry args={[100, 100]} />
 				<lightSweepMaterial />
 			</mesh>
@@ -52,23 +46,14 @@ const Grid = ({ number = 23, lineWidth = 0.026, baseHeight, values }) => {
 					Array.from({ length: number }, (_, x) => (
 						<group
 							key={x + ':' + y}
-							position={[
-								x * 2 - Math.floor(number / 2) * 2,
-								-0.01,
-								y * 2 - Math.floor(number / 2) * 2,
-							]}
+							position={[x * 2 - Math.floor(number / 2) * 2, -0.01, y * 2 - Math.floor(number / 2) * 2]}
 						>
 							<Instance rotation={[-Math.PI / 2, 0, 0]} />
-							<Instance
-								rotation={[-Math.PI / 2, 0, Math.PI / 2]}
-							/>
+							<Instance rotation={[-Math.PI / 2, 0, Math.PI / 2]} />
 						</group>
 					))
 				)}
-				<gridHelper
-					args={[100, 100, '#bbb', '#bbb']}
-					position={[0, -0.01, 0]}
-				/>
+				<gridHelper args={[100, 100, '#bbb', '#bbb']} position={[0, -0.01, 0]} />
 			</Instances>
 		</>
 	);
