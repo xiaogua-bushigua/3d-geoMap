@@ -1,9 +1,8 @@
 import * as THREE from 'three';
-import { useRef, useState, useEffect } from 'react';
-import { Text3D, Html, Edges, QuadraticBezierLine, useAnimations, useGLTF } from '@react-three/drei';
+import { useRef, useState } from 'react';
+import { Text3D, Html, Edges } from '@react-three/drei';
 import '../lightSweep.js';
 import { gsap } from 'gsap';
-import { useFrame } from '@react-three/fiber';
 import Flylines from './Flylines.jsx';
 import Bird from './Bird.jsx';
 

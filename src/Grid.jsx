@@ -1,15 +1,17 @@
 import { Instances, Instance, Text3D } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import './lightSweep.js';
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
 const Grid = ({ number = 23, lineWidth = 0.026, baseHeight, values }) => {
 	const light = useRef();
-	const ringWidth = 0.05;
+	const ringWidth = 0.35;
 	const T = Math.PI / 2;
+
 	useFrame((state) => {
-		const elapsedTime = state.clock.getElapsedTime() / 1.5;
+		const elapsedTime = state.clock.getElapsedTime() / 3;
 		const stage = (elapsedTime / T) % 2;
+
 		if (stage < 1) light.current.material.uniforms.innerRadius.value = 1.5 * Math.abs(Math.sin(elapsedTime));
 		else light.current.material.uniforms.innerRadius.value = 0;
 		light.current.material.uniforms.ringWidth.value = ringWidth;
@@ -27,7 +29,7 @@ const Grid = ({ number = 23, lineWidth = 0.026, baseHeight, values }) => {
 	return (
 		<>
 			<mesh ref={light} position={[0, 0, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-				<planeGeometry args={[100, 100]} />
+				<planeGeometry args={[20, 20]} />
 				<lightSweepMaterial />
 			</mesh>
 			<Text3D
