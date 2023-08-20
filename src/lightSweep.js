@@ -8,7 +8,7 @@ class LightSweepMaterial extends THREE.ShaderMaterial {
 			uniforms: {
 				ringWidth: { value: 0.0 },
 				innerRadius: { value: 0.0 },
-				uTexture: { value: new THREE.TextureLoader().load('./ground_sparkles.png') },
+				uTexture: { value: new THREE.TextureLoader().load('./texture.jpg') },
 			},
 			vertexShader: /* glsl */ `
         varying vec2 vUv;
@@ -31,7 +31,7 @@ class LightSweepMaterial extends THREE.ShaderMaterial {
           float pattern = patternInner * patternOuter;
 
           vec4 texture = texture2D(uTexture, vUv);
-          gl_FragColor.rgba = vec4(pattern*texture.r*2.0, pattern*texture.g*1.1, pattern*texture.b, pattern*texture.r);
+          gl_FragColor.rgba = vec4(pattern*texture.r*1.0, pattern*texture.g*1.1, pattern*texture.b*2.0, pattern*texture.r);
         }
       `,
 		});

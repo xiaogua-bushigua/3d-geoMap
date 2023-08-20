@@ -5,7 +5,7 @@ import { useEffect, useRef } from 'react';
 
 const Grid = ({ number = 23, lineWidth = 0.026, baseHeight, values }) => {
 	const light = useRef();
-	const ringWidth = 0.35;
+	const ringWidth = 0.075;
 	const T = Math.PI / 2;
 
 	useFrame((state) => {
@@ -29,7 +29,7 @@ const Grid = ({ number = 23, lineWidth = 0.026, baseHeight, values }) => {
 	return (
 		<>
 			<mesh ref={light} position={[0, 0, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-				<planeGeometry args={[20, 20]} />
+				<planeGeometry args={[80, 80]} />
 				<lightSweepMaterial />
 			</mesh>
 			<Text3D
