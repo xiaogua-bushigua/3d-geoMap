@@ -31,7 +31,7 @@ class LightSweepMaterial extends THREE.ShaderMaterial {
           float pattern = patternInner * patternOuter;
 
           vec4 texture = texture2D(uTexture, vUv);
-          gl_FragColor.rgba = vec4(pattern*texture.r*1.0, pattern*texture.g*1.1, pattern*texture.b*2.0, pattern*texture.r);
+          gl_FragColor.rgba = vec4(pattern*texture.r*1.0, pattern*texture.g*1.0, pattern*texture.b*1.4, texture.b*pattern);
         }
       `,
 		});
