@@ -2,7 +2,7 @@
 
 ###### 3d map
 
-
+![image text](https://github.com/xiaogua-bushigua/3d-geoMap/blob/master/screenshoot.gif)
 
 ### 👉 a Web3D project based on react-three-fiber
 
