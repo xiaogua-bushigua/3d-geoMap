@@ -8,6 +8,6 @@
 
 ### 🗝️ keywords: 3d map, three.js, react-three-fiber, glsl, gsap
 
-### 🎞️ online video demo: https://www.bilibili.com/video/BV1ku4y1X7wU/
+### 🎞️ online demo: https://www.bilibili.com/video/BV1ku4y1X7wU/ and https://3d-geo-map.vercel.app/
 
 ### ⚒️ `npm i`	 `npm run dev` 
