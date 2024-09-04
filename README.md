@@ -1,8 +1,10 @@
 ## 3D Geographic Map
 
+
+
 <img src="./screenshoot.gif" alt="screenshoot" style="zoom:30%; float: left;" />
 
-👉 a Web3D project based on react-three-fiber
+This project demonstrates the capability to render beautiful and interactive 3D maps in browsers. 3D maps are often used in web applications to visualize data across various geographical locations.
 
 🗝️ **keywords**: web3d, three.js, react, react-three-fiber, gsap, leva, map
 
@@ -10,4 +12,4 @@
 
 👓 **demo**:  https://3d-geo-map.vercel.app/
 
-**⚒️ `npm i` ,	 `npm run dev`** 
+**⚒️ `npm i`  and  `npm run dev`** 
