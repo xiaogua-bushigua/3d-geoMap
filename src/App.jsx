@@ -1,5 +1,5 @@
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls, ContactShadows, Environment, Lightformer } from '@react-three/drei';
+import { OrbitControls, ContactShadows, Environment, Lightformer, useProgress } from '@react-three/drei';
 import Grid from './Grid';
 import Map from './Map/Map';
 import countValues_anhui from './assets/values_anhui.json';
@@ -17,28 +17,32 @@ function App() {
 
 	const MemoGrid = memo(Grid);
 
+	const { progress } = useProgress();
+
 	return (
 		<Suspense fallback={<Loading />}>
-			<div
-				style={{
-					position: 'absolute',
-					top: '10px',
-					zIndex: 1,
-					display: 'flex',
-					justifyContent: 'space-between',
-					alignItems: 'center',
-					width: '100%',
-					padding: '0 20px',
-					boxSizing: 'border-box',
-				}}
-			>
-				<h1 style={{ fontSize: '28px', color: 'black', fontFamily: 'zaozigongfangtianliti' }}>
-					Click on the map section to view the GDP value
-				</h1>
-				<a href="https://github.com/xiaogua-bushigua/3d-geoMap" target="_blank">
-					<img src="./github.png" style={{ width: '48px', height: '48px' }} />
-				</a>
-			</div>
+			{progress === 100 && (
+				<div
+					style={{
+						position: 'absolute',
+						top: '10px',
+						zIndex: 1,
+						display: 'flex',
+						justifyContent: 'space-between',
+						alignItems: 'center',
+						width: '100%',
+						padding: '0 20px',
+						boxSizing: 'border-box',
+					}}
+				>
+					<h1 style={{ fontSize: '28px', color: 'black', fontFamily: 'zaozigongfangtianliti' }}>
+						Click on the map section to view the GDP value
+					</h1>
+					<a href="https://github.com/xiaogua-bushigua/3d-geoMap" target="_blank">
+						<img src="./github.png" style={{ width: '48px', height: '48px' }} />
+					</a>
+				</div>
+			)}
 			<Canvas camera={{ position: [0, 12, 16], fov: 50 }}>
 				<ambientLight intensity={2} />
 				<directionalLight intensity={20} position={[0, 0, 1]} />
