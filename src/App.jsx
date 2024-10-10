@@ -41,7 +41,7 @@ function App() {
 					}}
 				>
 					<h1 style={{ fontSize: '28px', color: 'black', fontFamily: 'zaozigongfangtianliti' }}>
-						Click on the map section to view the GDP value
+						Click the region on the map!
 					</h1>
 					<a href="https://github.com/xiaogua-bushigua/3d-geoMap" target="_blank">
 						<img src="./github.png" style={{ width: '48px', height: '48px' }} />
