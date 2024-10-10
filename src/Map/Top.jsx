@@ -1,14 +1,28 @@
 import * as THREE from 'three';
 import { useRef, useState } from 'react';
 import { Text3D, Html, Edges } from '@react-three/drei';
-import '../lightSweep.js';
 import { gsap } from 'gsap';
-import Flylines from './Flylines.jsx';
-import Bird from './Bird.jsx';
+import Flylines from '../Decoration/Flylines.jsx';
+import Bird from '../Decoration/Bird.jsx';
+
+const config = {
+	color: '#9cb8e4',
+	clearcoat: 0.5,
+	reflectivity: 0.35,
+	ior: 1.3,
+};
+const textConfig = {
+	curveSegments: 32,
+	bevelEnabled: true,
+	bevelSize: 0,
+	bevelThickness: 0,
+	height: 0.02,
+	letterSpacing: 0,
+	size: 0.25,
+};
+const scale = 3.15;
 
 const Top = ({ baseHeight, midHeightScale, topHeightScale, blocks, values, mapCenter }) => {
-	const scale = 3.15;
-
 	let rankInfo = Object.keys(values.features).map((key) => `${key} ${values.features[key]}`);
 	rankInfo.sort((a, b) => b.split(' ')[1] - a.split(' ')[1]);
 	rankInfo = rankInfo.map((item, index) => index + 1 + '.' + item);
@@ -17,25 +31,8 @@ const Top = ({ baseHeight, midHeightScale, topHeightScale, blocks, values, mapCe
 		rank[item.split('.')[1].split(' ')[0]] = item;
 	});
 
-	const config = {
-		color: '#9cb8e4',
-		clearcoat: 0.5,
-		reflectivity: 0.35,
-		ior: 1.3,
-	};
-
 	const blocksRef = useRef([]);
 	const namesRef = useRef([]);
-
-	const textConfig = {
-		curveSegments: 32,
-		bevelEnabled: true,
-		bevelSize: 0,
-		bevelThickness: 0,
-		height: 0.02,
-		letterSpacing: 0,
-		size: 0.25,
-	};
 
 	const [makerVisible, setMakerVisible] = useState(false);
 	const [makerPosition, setMakerPosition] = useState([0, 2, 0]);
@@ -49,10 +46,10 @@ const Top = ({ baseHeight, midHeightScale, topHeightScale, blocks, values, mapCe
 		// 第二次点击选中的地图，让其恢复默认状态
 		if (blocksRef.current[index].scale.z == 0.8) handleSecondClick(index);
 		else {
-			handleFristClick(index);
+			handleFirstClick(index);
 		}
 	};
-	const handleFristClick = (index) => {
+	const handleFirstClick = (index) => {
 		let tempArr = [];
 		blocks.forEach((block, i) => {
 			if (i !== index) {
@@ -73,9 +70,9 @@ const Top = ({ baseHeight, midHeightScale, topHeightScale, blocks, values, mapCe
 		});
 		setLines({ children: [...tempArr] });
 		// maker
-		const province = blocks[index].properties.name;
+		const region = blocks[index].properties.name;
 		setMakerVisible(true);
-		setMakerValue(rank[province]);
+		setMakerValue(rank[region]);
 		setMakerPosition([
 			(blocks[index].properties.center[0] - mapCenter[0]) * scale,
 			2,

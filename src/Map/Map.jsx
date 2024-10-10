@@ -3,14 +3,14 @@ import * as d3 from 'd3-geo';
 import Base from './Base';
 import Mid from './Mid';
 import Top from './Top';
-import { useState } from 'react';
 
+// 将不规范的数据规范化（json中的coordinates有时少了一层嵌套）
 const processing = (oriData, values) => {
-	oriData.features.forEach((province) => {
-		province.properties.value = values.features[province.properties.name];
-		if (typeof province.geometry.coordinates[0][0][0] === 'number') {
-			const temp = province.geometry.coordinates[0];
-			province.geometry.coordinates[0] = [temp];
+	oriData.features.forEach((region) => {
+		region.properties.value = values.features[region.properties.name];
+		if (typeof region.geometry.coordinates[0][0][0] === 'number') {
+			const temp = region.geometry.coordinates[0];
+			region.geometry.coordinates[0] = [temp];
 		}
 	});
 	return oriData;
@@ -20,11 +20,11 @@ const Map = ({ baseHeight, midHeightScale, topHeightScale, values, geoJson, mapC
 	const map = new THREE.Object3D();
 	const projection = d3.geoMercator().center(mapCenter).translate([0, 0]);
 
-	processing(geoJson, values).features.forEach((element, index) => {
-		const province = new THREE.Object3D();
+	processing(geoJson, values).features.forEach(element => {
+		const region = new THREE.Object3D();
 		const coordinates = element.geometry.coordinates;
 
-		coordinates.forEach((multiPolygon, index) => {
+		coordinates.forEach(multiPolygon => {
 			multiPolygon.forEach((polygon) => {
 				const shape = new THREE.Shape();
 				const lineMaterial = new THREE.LineBasicMaterial({
@@ -54,21 +54,20 @@ const Map = ({ baseHeight, midHeightScale, topHeightScale, values, geoJson, mapC
 
 				const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
 				const material = new THREE.MeshBasicMaterial();
-				const material1 = new THREE.MeshBasicMaterial();
-				const mesh = new THREE.Mesh(geometry, [material, material1]);
+				const mesh = new THREE.Mesh(geometry, material);
 				const line = new THREE.Line(lineGeometry, lineMaterial);
-				province.add(mesh);
-				province.add(line);
+				region.add(mesh);
+				region.add(line);
 			});
 		});
 
-		province.properties = element.properties;
-		if (element.properties.contorid) {
-			const [x, y] = projection(element.properties.contorid);
-			province.properties._centroid = [x, y];
+		region.properties = element.properties;
+		if (element.properties.centroid) {
+			const [x, y] = projection(element.properties.centroid);
+			region.properties._centroid = [x, y];
 		}
 
-		map.add(province);
+		map.add(region);
 	});
 
 	return (

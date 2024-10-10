@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import { QuadraticBezierLine } from '@react-three/drei';
-import '../lightSweep.js';
+import '../shader/lightSweep.js';
 import { useFrame } from '@react-three/fiber';
 
 const Flylines = ({ lines }) => {

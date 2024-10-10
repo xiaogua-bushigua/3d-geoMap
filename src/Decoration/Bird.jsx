@@ -1,11 +1,11 @@
 import { useRef, useEffect } from 'react';
 import { useAnimations, useGLTF } from '@react-three/drei';
-import '../lightSweep.js';
+import '../shader/lightSweep.js';
 import { gsap } from 'gsap';
 
 const Bird = ({ targetPosition }) => {
 	const birdRef = useRef();
-	const model = useGLTF('./flying_synthwave_bird.glb');
+	const model = useGLTF('./model_assets/flying_synthwave_bird.glb');
 	const animations = useAnimations(model.animations, model.scene);
 
 	useEffect(() => {
@@ -14,10 +14,10 @@ const Bird = ({ targetPosition }) => {
 	}, [animations]);
 
 	useEffect(() => {
-		doRotate();
+		rotate();
 	}, [targetPosition]);
 
-	const doRotate = () => {
+	const rotate = () => {
 		let { rotateAngle } = autoRotate([targetPosition.x, targetPosition.z], [0, -1]);
 
 		gsap.to(birdRef.current.rotation, {

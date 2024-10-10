@@ -1,42 +1,41 @@
 import { Instances, Instance, Text3D } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
-import './lightSweep.js';
+import '../shader/lightSweep.js';
 import { useRef } from 'react';
 
-const Grid = ({ number = 23, lineWidth = 0.026, baseHeight, values }) => {
-	const light = useRef();
-	const ringWidth = 0.075;
-	const T = Math.PI / 2;
+const textConfig = {
+	curveSegments: 32,
+	bevelEnabled: true,
+	bevelSize: 0,
+	bevelThickness: 0,
+	height: 0.02,
+	letterSpacing: 0,
+	size: 0.6,
+};
 
-	useFrame((state) => {
-		const elapsedTime = state.clock.getElapsedTime() / 3;
-		const stage = (elapsedTime / T) % 2;
+const Grid = ({ baseHeight, values }) => {
+  const number = 23, lineWidth = 0.026;
+	// const light = useRef();
+	// const T = Math.PI / 2;
 
-		if (stage < 1) light.current.material.uniforms.innerRadius.value = 1.5 * Math.abs(Math.sin(elapsedTime));
-		else light.current.material.uniforms.innerRadius.value = 0;
-		light.current.material.uniforms.ringWidth.value = ringWidth;
-	});
+	// useFrame((state) => {
+	// 	const elapsedTime = state.clock.getElapsedTime() / 3;
+	// 	const stage = (elapsedTime / T) % 2;
 
-	const textConfig = {
-		curveSegments: 32,
-		bevelEnabled: true,
-		bevelSize: 0,
-		bevelThickness: 0,
-		height: 0.02,
-		letterSpacing: 0,
-		size: 0.6,
-	};
+	// 	if (stage < 1) light.current.material.uniforms.innerRadius.value = 1.5 * Math.abs(Math.sin(elapsedTime));
+	// 	else light.current.material.uniforms.innerRadius.value = 0;
+	// });
 	return (
 		<>
-			<mesh ref={light} position={[0, 0, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+			{/* <mesh ref={light} rotation={[-Math.PI / 2, 0, 0]}>
 				<planeGeometry args={[80, 80]} />
 				<lightSweepMaterial />
-			</mesh>
+			</mesh> */}
 			<Text3D
 				font={'./MFTianLiNoncommercial_Regular.json'}
 				position={[-14, 0, -15]}
 				rotation={[-Math.PI * 0.2, 0, 0]}
-        scale={1.2}
+				scale={1.2}
 				{...textConfig}
 			>
 				{values.title}
